@@ -1,0 +1,69 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+{% load custom_tags %}
+
+
+{% block title %}
+news
+{% endblock title %}
+
+
+{% block content %}
+    <h3>{{ time_now|date:'d M Y' }}</h3>
+    <h1>Все новости</h1>
+    {# Добавляем форму, которая объединяет набор полей, которые будут отправляться в запросе #}
+    <form action="" method="get">
+    {{ filterset.form.as_p }}
+    <input type="submit" value="Найти"/>
+    </form>
+
+
+    {% if news %}
+       <table>
+           <tr>
+               <td>Заголовок</td>
+               <td>Дата публикации</td>
+               <td>Текст</td>
+               <td>Тип поста</td>
+               <td>ID поста</td>
+               <td>Автор</td>
+           </tr>
+
+           {% for new in news %}
+           <tr>
+               <td>{{ new.title|censor }}&emsp;</td>
+               <td>{{ new.date_create|date:'d M Y, H m'|censor}}&emsp;</td>
+               <td>{{ new.content|truncatechars:20|censor }}&emsp;</td>
+               <td>{{ new.post_type }}&emsp;</td>
+               <td>{{ new.id }}&emsp;</td>
+               <td>{{ new.author }}&emsp;</td>
+
+
+           </tr>
+           {% endfor %}
+
+       </table>
+    {% else %}
+       <h2>Новостей нет!</h2>
+
+    {% endif %}
+    {% if page_obj.has_previous %}
+       {# Для каждой ссылки пагинации указываем обработку через новый тег #}
+       <a href="?{% url_replace page=1 %}">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {{ page_obj.number }}
+
+   {% if page_obj.has_next %}
+       <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+
+{% endblock content %}

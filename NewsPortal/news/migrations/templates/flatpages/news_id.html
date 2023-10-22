@@ -1,0 +1,35 @@
+{% extends 'flatpages/default.html' %}
+{% load custom_filters %}
+
+<!-- Название у нас будет products -->
+{% block title %}
+news
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим все товары -->
+{% block content %}
+    <h3>{{ time_now|date:'d M Y' }}</h3>
+    <h1>Новость</h1>
+    {% if news_id %}
+       <table>
+           <tr>
+               <td>Заголовок</td>
+               <td>Текст</td>
+               <td>Дата загрузки</td>
+           </tr>
+
+
+
+           <tr>
+               <td>{{ news_id.title|censor }}&emsp;</td>
+               <td>{{ news_id.content|censor }}&emsp;</td>
+               <td>{{ news_id.date_create|date:'d M Y '|censor }}</td>
+
+           </tr>
+       </table>
+    {% else %}
+       <!-- Если товаров нет, говорим, что товаров нет ;) -->
+        <h2>Новостей нет!</h2>
+    {% endif %}
+
+{% endblock content %}
